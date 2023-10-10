@@ -5,14 +5,14 @@ name: Go
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "feng380-patch-1_no404" ]
   pull_request:
-    branches: [ "dev" ]
+    branches: [ "feng380-patch-1_no404" ]
 
 jobs:
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-2016
     steps:
     - uses: actions/checkout@v3
 

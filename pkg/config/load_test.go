@@ -12,24 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package v1
+package config
 
 import (
 	"testing"
 
-	"github.com/samber/lo"
 	"github.com/stretchr/testify/require"
+
+	v1 "github.com/fatedier/frp/pkg/config/v1"
 )
 
-func TestClientConfigComplete(t *testing.T) {
+func TestLoadConfigure(t *testing.T) {
 	require := require.New(t)
-	c := &ClientConfig{}
-	c.Complete()
+	content := `
+bindAddr = "127.0.0.1"
+kcpBindPort = 7000
+quicBindPort = 7001
+tcpmuxHTTPConnectPort = 7005
+custom404Page = "/abc.html"
+transport.tcpKeepalive = 10
+`
 
-	require.EqualValues("token", c.Auth.Method)
-	require.Equal(true, lo.FromPtr(c.Transport.TCPMux))
-	require.Equal(true, lo.FromPtr(c.LoginFailExit))
-	require.Equal(true, lo.FromPtr(c.Transport.TLS.Enable))
-	require.Equal(true, lo.FromPtr(c.Transport.TLS.DisableCustomTLSFirstByte))
-	require.NotEmpty(c.NatHoleSTUNServer)
+	svrCfg := v1.ServerConfig{}
+	err := LoadConfigure([]byte(content), &svrCfg)
+	require.NoError(err)
+	require.EqualValues("127.0.0.1", svrCfg.BindAddr)
+	require.EqualValues(7000, svrCfg.KCPBindPort)
+	require.EqualValues(7001, svrCfg.QUICBindPort)
+	require.EqualValues(7005, svrCfg.TCPMuxHTTPConnectPort)
+	require.EqualValues("/abc.html", svrCfg.Custom404Page)
+	require.EqualValues(10, svrCfg.Transport.TCPKeepAlive)
 }

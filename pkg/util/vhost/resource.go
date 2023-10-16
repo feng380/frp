@@ -46,7 +46,6 @@ Please try again later.</p>
 //编辑404错误页
 </body>
 </html>
-`
 )
 
 func getNotFoundPageContent() []byte {
